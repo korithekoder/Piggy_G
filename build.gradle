@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group = 'net.tiimzee.piggyg'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes "Main-Class" : "net.tiimzee.piggyg.Main"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+dependencies {
+    implementation "net.dv8tion:JDA:5.0.0"
+    implementation group: 'org.json', name: 'json', version: '20231013'
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+}
