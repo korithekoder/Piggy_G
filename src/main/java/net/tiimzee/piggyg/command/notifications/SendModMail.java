@@ -37,6 +37,7 @@ public class SendModMail extends ListenerAdapter {
                     while (sc.hasNextLine()) {
                         output += sc.nextLine();
                     }
+                    sc.close();
                 } catch (Exception e) {
                     out.println(e);
                 }
