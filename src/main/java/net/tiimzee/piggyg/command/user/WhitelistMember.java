@@ -9,6 +9,13 @@ import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGuildWhitelistMemberWithJson;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.isWhitelistEnabled;
 
+/**
+ * Discord command used for whitelisting a member on a guild.
+ * IMPORTANT: This command can only be used properly if Developer Mode is enabled, since
+ * you can't copy a user's ID without the option turned on.
+ * 
+ * You can turn this option on by going to Settings > Advanced > Developer Mode.
+ */
 public class WhitelistMember extends ListenerAdapter {
 
     @Override

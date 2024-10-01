@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 
+/**
+ * Discord command used for setting a reports channel for a guild
+ */
 public class SetReportChannel extends ListenerAdapter {
 
     @Override

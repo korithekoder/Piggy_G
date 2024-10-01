@@ -5,13 +5,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.Scanner;
-import java.util.function.Supplier;
 
-import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getFileContent;
 
+/**
+ * Discord command used for sending a report of another user to a channel set by the admins.
+ * TODO: Create a command for setting a custom timeout when a user gets reported!!
+ */
 public class SendReport extends ListenerAdapter {
 
     @Override

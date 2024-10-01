@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 
+/**
+ * Discord command used for setting the strike count before the user gets banned
+ */
 public class SetStrikeCount extends ListenerAdapter {
 
     @Override

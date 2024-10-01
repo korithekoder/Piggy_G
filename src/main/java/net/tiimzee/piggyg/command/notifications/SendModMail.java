@@ -22,6 +22,10 @@ import static net.tiimzee.piggyg.resource.ResourceDirectory.ofMember;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getFileContent;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.returnFullTimeoutType;
 
+/**
+ * Discord command used for sending "mail" to a channel set by the admins
+ * of the server.
+ */
 public class SendModMail extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -115,9 +119,9 @@ public class SendModMail extends ListenerAdapter {
                                     }
                                     event.reply(
                                             "'Ight fool, you can't be saying that kind of stuff\n" +
-                                                    "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((String) jsonData.get("timetype")) + "\n" +
-                                                    "# Reason\n" +
-                                                    "Said censored word: " + word
+                                            "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((char) jsonData.get("timetype")) + "\n" +
+                                            "# Reason\n" +
+                                            "Said censored word: " + word
                                     ).queue();
                                 } else {
                                     event.reply("""

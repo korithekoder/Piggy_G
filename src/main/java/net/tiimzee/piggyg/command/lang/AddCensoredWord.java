@@ -11,6 +11,9 @@ import java.util.function.Supplier;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofCensoredWordWithJson;
 
+/**
+ * Discord command for adding a censored word to a guild
+ */
 public class AddCensoredWord extends ListenerAdapter {
 
     @Override

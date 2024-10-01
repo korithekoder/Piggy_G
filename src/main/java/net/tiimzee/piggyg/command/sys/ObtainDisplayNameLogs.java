@@ -8,6 +8,11 @@ import java.io.File;
 
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
+/**
+ * Discord command used for getting all of the logs of name changes that
+ * people have made on the guild. 
+ * NOTE: This only works if Piggy G is active and online, so don't always rely on it!
+ */
 public class ObtainDisplayNameLogs extends ListenerAdapter {
 
     @Override

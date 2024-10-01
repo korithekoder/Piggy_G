@@ -31,14 +31,22 @@ import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.*;
 
+/**
+ * Core class for general server event listening events
+ */
 public class ServerEventListener extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
+
         JDA client = event.getJDA();
+        final long NEW_GUILD_ID = event.getGuild().getIdLong();
 
-        long NEW_GUILD_ID = event.getGuild().getIdLong();
-
+        /*
+         * Add all of the folders and files for the
+         * new server
+         */
+        
         addFolder(ofServer(NEW_GUILD_ID));
         addFolder(ofServer(NEW_GUILD_ID, "logs"));
         addFolder(ofServer(NEW_GUILD_ID, "settings"));
@@ -51,6 +59,18 @@ public class ServerEventListener extends ListenerAdapter {
         addFolder(ofServer(NEW_GUILD_ID, "memory\\members"));
         addFolder(ofServer(NEW_GUILD_ID, "memory\\joinattempts"));
 
+        for (Member member : event.getGuild().getMembers()) {
+            if (!member.getUser().isBot()) {
+                addFolder(ofMember(member.getIdLong(), event.getGuild().getIdLong()));
+                addFolder(ofMember(member.getIdLong(), event.getGuild().getIdLong(), "strikes"));
+
+                addFile(
+                    ofMember(member.getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
+                    "{\n  \"count\": 0\n}"
+                );
+            }
+        }
+
         /*
          * Registers the bot's commands
          */
@@ -59,66 +79,55 @@ public class ServerEventListener extends ListenerAdapter {
         assert COMMAND_REGISTER != null;
 
         COMMAND_REGISTER.upsertCommand("troll", "Send someone a DM (without telling them you sent it)").addOptions(
-                new OptionData(OptionType.MENTIONABLE, "user", "The user you want to troll", true),
-                new OptionData(OptionType.STRING, "message", "The funny message you want to send", true).setMaxLength(2000)
+            new OptionData(OptionType.MENTIONABLE, "user", "The user you want to troll", true),
+            new OptionData(OptionType.STRING, "message", "The funny message you want to send", true).setMaxLength(2000)
         ).queue();
         COMMAND_REGISTER.upsertCommand("addcensoredword", "Adds a censored word that is not allowed to be said").addOptions(
-                new OptionData(OptionType.STRING, "word", "Word to be censored", true).setMaxLength(2000),
-                new OptionData(OptionType.INTEGER, "addstrikes", "Adds how many strikes to the user's count (default value is 1, max is 9999999999999)", false).setMinValue(1).setMaxValue(9999999999999L)
+            new OptionData(OptionType.STRING, "word", "Word to be censored", true).setMaxLength(2000),
+            new OptionData(OptionType.INTEGER, "addstrikes", "Adds how many strikes to the user's count (default value is 1, max is 9999999999999)", false).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("setstrikecount", "Sets the maximum strikes a user can get before they are banned").addOptions(
-                new OptionData(OptionType.INTEGER, "count", "Count to be set (max is 9999999999999)", true).setMinValue(0).setMaxValue(9999999999999L)
+            new OptionData(OptionType.INTEGER, "count", "Count to be set (max is 9999999999999)", true).setMinValue(0).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("removecensoredword", "Removes an existing censored word").addOptions(
-                new OptionData(OptionType.STRING, "word", "Word to be marked for removal", true).setMaxLength(2000)
+            new OptionData(OptionType.STRING, "word", "Word to be marked for removal", true).setMaxLength(2000)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("setmailchannel", "Sets the channel admins receive mail and messages").addOptions(
-                new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
+            new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_CHANNEL)).queue();
         COMMAND_REGISTER.upsertCommand("sendmodmail", "Send mail to the set mail channel").addOptions(
-                new OptionData(OptionType.STRING, "message", "Mail to be sent", true).setMaxLength(2000)
+            new OptionData(OptionType.STRING, "message", "Mail to be sent", true).setMaxLength(2000)
         ).queue();
         COMMAND_REGISTER.upsertCommand("setreportchannel", "Sets the channel admins receive user reports").addOptions(
-                new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
+            new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_CHANNEL)).queue();
         COMMAND_REGISTER.upsertCommand("report", "Report someone on this server. The admins will receive a report (if they set the channel)").addOptions(
-                new OptionData(OptionType.USER, "user", "User to report", true),
-                new OptionData(OptionType.STRING, "reason", "Reason why user is being reported (please keep this part around one word)", true).setMaxLength(200),
-                new OptionData(OptionType.STRING, "description", "Details on what happened", true)
+            new OptionData(OptionType.USER, "user", "User to report", true),
+            new OptionData(OptionType.STRING, "reason", "Reason why user is being reported (please keep this part around one word)", true).setMaxLength(200),
+            new OptionData(OptionType.STRING, "description", "Details on what happened", true)
         ).queue();
         COMMAND_REGISTER.upsertCommand("settimeoutstrike", "Sets a strike to be a server timeout (for a set time)").addOptions(
-                new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a timeout", true).setMinValue(1).setMaxValue(9999999999999L),
-                new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
-                new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)
+            new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a timeout", true).setMinValue(1).setMaxValue(9999999999999L),
+            new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
+            new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
         COMMAND_REGISTER.upsertCommand("setkickstrike", "Sets a strike to be a server kick").addOptions(
-                new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a kick", true).setMinValue(1).setMaxValue(9999999999999L)
+            new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a kick", true).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
         COMMAND_REGISTER.upsertCommand("permaban", "Permanently bans a user (rather than the 7 days limit)").addOptions(
-                new OptionData(OptionType.USER, "user", "User to permanently ban from this server", true)
+            new OptionData(OptionType.USER, "user", "User to permanently ban from this server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)).queue();
         COMMAND_REGISTER.upsertCommand("unpermaban", "Revokes the permaban from a permanently banned user").addOptions(
-                new OptionData(OptionType.USER, "user", "User to revoke permaban from this server", true)
+            new OptionData(OptionType.USER, "user", "User to revoke permaban from this server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)).queue();
         COMMAND_REGISTER.upsertCommand("obtaintrolllogs", "Gets the .txt troll logs").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("obtaindisplaynamelogs", "Gets the .txt display name change logs").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("enablewhitelist", "ENABLES the whitelist system").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("disablewhitelist", "DISABLES the whitelist system").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
         COMMAND_REGISTER.upsertCommand("whitelist", "Add a member to the whitelist").addOptions(
-                new OptionData(OptionType.STRING, "user_id", "User to whitelist to the server", true)
+            new OptionData(OptionType.STRING, "user_id", "User to whitelist to the server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
 
-        for (Member member : event.getGuild().getMembers()) {
-            if (!member.getUser().isBot()) {
-                addFolder(ofMember(member.getIdLong(), event.getGuild().getIdLong()));
-                addFolder(ofMember(member.getIdLong(), event.getGuild().getIdLong(), "strikes"));
-
-                addFile(
-                        ofMember(member.getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
-                        "{\n  \"count\": 0\n}"
-                );
-            }
-        }
     }
 
     @Override
@@ -237,7 +246,7 @@ public class ServerEventListener extends ListenerAdapter {
                         if (isKick || isBan) {
                             File memberWhitelistFile = new File(ofGuildWhitelistMemberWithJson(event.getMember().getIdLong(), event.getGuild().getIdLong()));
                             while (memberWhitelistFile.exists()) {
-                                if (memberWhitelistFile.delete()) ;
+                                if (memberWhitelistFile.delete());
                             }
                         }
                     }
@@ -253,6 +262,7 @@ public class ServerEventListener extends ListenerAdapter {
                             *So*...
                             This is your *only* warnin'...
                             My name... is ***Piggy_G***,
+                            I'm a real gangster,
                             I stay on all fours (no homo),
                             and if you mess with the barn, *man*,
                             I will attack yo farm.

@@ -7,6 +7,9 @@ import java.io.File;
 
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofCensoredWordWithJson;
 
+/**
+ * Discord command for removing a censored word from a guild
+ */
 public class RemoveCensoredWord extends ListenerAdapter {
 
     @Override

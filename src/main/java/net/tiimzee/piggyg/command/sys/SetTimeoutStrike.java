@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
 
+/**
+ * Discord command used for setting a strike with the timeout type
+ */
 public class SetTimeoutStrike extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {

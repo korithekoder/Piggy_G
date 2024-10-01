@@ -18,12 +18,15 @@ import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.*;
 
+/**
+ * Core class for general message listening events
+ */
 public class MessageEventListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;  // Ignores the message if the author is a bot
-        if (event.getMessage().isWebhookMessage()) return;
+        if (event.getMessage().isWebhookMessage()) return;  // Ignores the message if it's a webhook message
 
         if (isWhitelistEnabled(event.getGuild().getIdLong())) {
             if (!isUserWhitelisted(event.getAuthor(), event.getGuild().getIdLong())) {
@@ -34,6 +37,14 @@ public class MessageEventListener extends ListenerAdapter {
         checkForCensoredWords(event.getMessage().getContentRaw(), event.getGuild().getIdLong(), event.getGuild(), event.getAuthor(), event);
     }
 
+    /**
+     * Checks if the message inputted contains words that are censored on the guild
+     * @param message The message to check for censored words
+     * @param guildID The guild's ID to obtain the censored words
+     * @param guild The guild (as an object)
+     * @param user The user (as an object)
+     * @param event The event (as an object)
+     */
     private static void checkForCensoredWords(String message, long guildID, Guild guild, User user, MessageReceivedEvent event) {
         // Gets the folder of censored words
 
@@ -103,7 +114,7 @@ public class MessageEventListener extends ListenerAdapter {
                                     }
                                     event.getMessage().reply(
                                             "'Ight fool, you can't be saying that kind of stuff\n" +
-                                                    "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((String) jsonData.get("timetype")) + "\n" +
+                                                    "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((char) jsonData.get("timetype")) + "\n" +
                                                     "# Reason\n" +
                                                     "Said censored word: ***\"" + word + "\"***"
                                     ).queue();

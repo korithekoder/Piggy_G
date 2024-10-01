@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
 
+/**
+ * Discord command used for setting a strike with the kick type
+ */
 public class SetKickStrike extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -19,10 +22,10 @@ public class SetKickStrike extends ListenerAdapter {
         try {
             FileWriter writer = new FileWriter(strikeFile);
             writer.write(
-                    """
-                            {
-                              "striketype": "k"
-                            }"""
+                """
+                {
+                "striketype": "k"
+                }"""
             );
             writer.close();
             event.reply("'Ight dawg, the strike has been put to it's standards").queue();

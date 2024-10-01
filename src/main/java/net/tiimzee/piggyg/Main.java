@@ -1,9 +1,23 @@
 /**
  * Piggy_G, an auto mod bot made in Java
  * by Tiimzee
+ * 
  * This bot uses the Common Creative license,
  * basically meaning that you can reuse and modify it so long as you
  * give proper attribution.
+ * 
+ * Please also note that this bot pretty much relies on the fact that
+ * all of the data (things like settings, memory, etc.) are usually stored on
+ * the desktop that Piggy_G was made on.
+ * 
+ * In other words (this is mostly note-to-self): ONLY CLONE THE BOT'S REPOSITORY IF YOU NEED TO
+ * TEST NEW FEATURES OR HOST IT ON ANOTHER COMPUTER IF YOU ABSOLUTELY HAVE TO!!
+ * 
+ * IMPORTANT!!!
+ * When Piggy_G gets ran, it will check for any missing
+ * important folders and files that it relies on. It will get most
+ * of it, but it needs the C: drive and a proper user folder. If it isn't there, the bot will
+ * REFUSE to work properly.
  */
 
 package net.tiimzee.piggyg;
@@ -14,38 +28,39 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.tiimzee.piggyg.command.funny.Troll;
-import net.tiimzee.piggyg.command.lang.AddCensoredWord;
-import net.tiimzee.piggyg.command.lang.RemoveCensoredWord;
-import net.tiimzee.piggyg.command.notifications.SendModMail;
-import net.tiimzee.piggyg.command.notifications.SendReport;
-import net.tiimzee.piggyg.command.notifications.SetMailChannel;
-import net.tiimzee.piggyg.command.notifications.SetReportChannel;
+import net.tiimzee.piggyg.command.funny.*;
+import net.tiimzee.piggyg.command.lang.*;
+import net.tiimzee.piggyg.command.notifications.*;
 import net.tiimzee.piggyg.command.sys.*;
-import net.tiimzee.piggyg.command.user.DisableWhitelist;
-import net.tiimzee.piggyg.command.user.EnableWhitelist;
-import net.tiimzee.piggyg.command.user.WhitelistMember;
+import net.tiimzee.piggyg.command.user.*;
 import net.tiimzee.piggyg.event.message.MessageEventListener;
 import net.tiimzee.piggyg.event.server.ServerEventListener;
 
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
 
+/**
+ * The main class that initializes the entire bot
+ */
 public class Main {
 
+    /**
+     * The bot's token (basically its password). 
+     * NOTE: This token is stored in a .env file, which is
+     * ignored using the .gitignore file for GitHub
+     */
     final public static String TOKEN = Dotenv.load().get("TOKEN");
-    public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-            .setMemberCachePolicy(MemberCachePolicy.ALL)
-            .setChunkingFilter(ChunkingFilter.ALL)
-            .build();
 
     /**
-     * IMPORTANT!!!
-     * When Piggy_G gets ran, it will check for any missing
-     * important folders and files that it relies on. It will get most
-     * of it, but it needs the C: drive and a proper user folder. If it isn't there, the bot will
-     * REFUSE to work properly.
+     * JDA object used throughout the Main.java file
      */
+    public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+        .setMemberCachePolicy(MemberCachePolicy.ALL)
+        .setChunkingFilter(ChunkingFilter.ALL)
+        .build();
 
+    /**
+     * The main method that gets ran upon being compiled and executed
+     */
     public static void main(String[] args) {
 
         /*
@@ -64,12 +79,10 @@ public class Main {
          */
 
         // Main events
-
         client.addEventListener(new MessageEventListener());
         client.addEventListener(new ServerEventListener());
 
         // Command events
-
         client.addEventListener(new Troll());
         client.addEventListener(new AddCensoredWord());
         client.addEventListener(new RemoveCensoredWord());

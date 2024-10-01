@@ -8,6 +8,10 @@ import java.io.File;
 
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
+/**
+ * Discord command used for getting all of the logs of troll messages that
+ * people have sent on the guild. 
+ */
 public class ObtainTrollLogs extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {

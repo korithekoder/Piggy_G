@@ -14,6 +14,10 @@ import java.time.format.DateTimeFormatter;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
+/**
+ * Discord command used for sending goofy ahh DMs to people on the server
+ * ...maybe add a variant where you can send a DM to anyone outside of the server?
+ */
 public class Troll extends ListenerAdapter {
 
     @Override

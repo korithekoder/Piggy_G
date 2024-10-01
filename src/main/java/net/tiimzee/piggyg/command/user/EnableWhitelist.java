@@ -11,6 +11,9 @@ import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGuildWhitelistMemberWithJson;
 
+/**
+ * Discord command used for enabling the whitelist system on a guild
+ */
 public class EnableWhitelist extends ListenerAdapter {
 
     @Override
@@ -19,8 +22,8 @@ public class EnableWhitelist extends ListenerAdapter {
 
         for (Member member : event.getGuild().getMembers()) {
             addFile(
-                    ofGuildWhitelistMemberWithJson(member.getIdLong(), event.getGuild().getIdLong()),
-                    "{}"
+                ofGuildWhitelistMemberWithJson(member.getIdLong(), event.getGuild().getIdLong()),
+                "{}"
             );
         }
 
