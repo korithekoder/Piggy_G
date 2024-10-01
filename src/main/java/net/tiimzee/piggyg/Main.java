@@ -1,5 +1,6 @@
 /**
- * Piggy_G, an auto mod bot made in Java
+ * Piggy_G
+ * An auto mod bot made in Java
  * by Tiimzee
  * 
  * This bot uses the Common Creative license,
@@ -54,6 +55,7 @@ public class Main {
      * JDA object used throughout the Main.java file
      */
     public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+        .setEventPassthrough(true)
         .setMemberCachePolicy(MemberCachePolicy.ALL)
         .setChunkingFilter(ChunkingFilter.ALL)
         .build();
@@ -100,5 +102,6 @@ public class Main {
         client.addEventListener(new WhitelistMember());
         client.addEventListener(new EnableWhitelist());
         client.addEventListener(new DisableWhitelist());
+        client.addEventListener(new SetReportTimeout());
     }
 }

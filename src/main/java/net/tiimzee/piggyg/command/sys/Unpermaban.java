@@ -11,6 +11,7 @@ import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
  * Discord command used for un-permabanning a user from the guild
  */
 public class Unpermaban extends ListenerAdapter {
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("unpermaban")) return;

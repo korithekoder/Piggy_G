@@ -18,7 +18,7 @@ import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
-import static net.tiimzee.piggyg.resource.ResourceDirectory.ofMember;
+import static net.tiimzee.piggyg.resource.ResourceObtainer.getNameWithoutExtension;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getFileContent;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.returnFullTimeoutType;
 
@@ -27,6 +27,7 @@ import static net.tiimzee.piggyg.resource.ResourceObtainer.returnFullTimeoutType
  * of the server.
  */
 public class SendModMail extends ListenerAdapter {
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("sendmodmail")) return;
@@ -149,16 +150,5 @@ public class SendModMail extends ListenerAdapter {
                 }
             }
         }
-    }
-
-    /**
-     * Used for getting rid of the file extension so that way,
-     * the word can be detected (i.e, instead of `word.json`,
-     * it will be `word` instead).
-     */
-
-    private static String getNameWithoutExtension(String file) {
-        int dotIndex = file.lastIndexOf('.');
-        return (dotIndex == -1) ? file : file.substring(0, dotIndex);
     }
 }

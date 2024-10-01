@@ -13,6 +13,7 @@ import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
  * Discord command used for setting a strike with the kick type
  */
 public class SetKickStrike extends ListenerAdapter {
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("setkickstrike")) return;

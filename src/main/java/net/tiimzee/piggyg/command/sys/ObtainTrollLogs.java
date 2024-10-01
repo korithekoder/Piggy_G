@@ -13,6 +13,7 @@ import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
  * people have sent on the guild. 
  */
 public class ObtainTrollLogs extends ListenerAdapter {
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("obtaintrolllogs")) return;

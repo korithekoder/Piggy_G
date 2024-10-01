@@ -127,6 +127,10 @@ public class ServerEventListener extends ListenerAdapter {
         COMMAND_REGISTER.upsertCommand("whitelist", "Add a member to the whitelist").addOptions(
             new OptionData(OptionType.STRING, "user_id", "User to whitelist to the server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+        COMMAND_REGISTER.upsertCommand("setreporttimeout", "Set the timeout for when a user is reported using the /report command").addOptions(
+            new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
+            new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)
+        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
 
     }
 

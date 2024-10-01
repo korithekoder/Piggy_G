@@ -14,6 +14,7 @@ import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
  * Discord command used for permabanning a user from the guild
  */
 public class Permaban extends ListenerAdapter {
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("permaban")) return;
@@ -23,8 +24,8 @@ public class Permaban extends ListenerAdapter {
         }
 
         addFile(
-                    ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getOption("user").getAsUser().getIdLong() + ".json"),
-                    "{}"
+            ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getOption("user").getAsUser().getIdLong() + ".json"),
+            "{}"
         );
 
         event.getGuild().ban(event.getOption("user").getAsUser(), 7, TimeUnit.DAYS).reason("Permabanned by a mod (imagine LMAO)").queue();
