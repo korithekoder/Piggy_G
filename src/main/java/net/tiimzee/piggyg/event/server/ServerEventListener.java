@@ -181,7 +181,6 @@ public class ServerEventListener extends ListenerAdapter {
                     ...but you ain't whitelisted.
                     Get yo ass up on out of here, before you
                     become a nationally known opp. :boom::gun:
-                    
                     Thank you.
                     """)).queue();
                     case 4 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
@@ -189,19 +188,26 @@ public class ServerEventListener extends ListenerAdapter {
                     I ain't gonn' let you through until you get whitelisted.
                     If you really wanna join the server, then ask a mod,
                     an admin. ***Don't come to me***.
-                    
                     ...you fucking ***dumbass***. :man_facepalming:
                     """)).queue();
-                    case 5 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # ***This is yo fifth time***
-                    Fuck off pigga :rage::middle_finger:
-                    (you know why)
-                    """)).queue();
-                    default -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # ***...***
-                    Pigga...
-                    is there really anything to say?
-                    """)).queue();
+                    case 5 -> {
+                        event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # ***This is yo fifth time***
+                        Fuck off pigga :rage::middle_finger:
+                        (you know why)
+                        """)).queue();
+
+                        if (!new File(ofSysSetting(event.getGuild().getIdLong(), "permabans")).exists()) {
+                            addFolder(ofSysSetting(event.getGuild().getIdLong(), "permabans"));
+                        }
+                
+                        addFile(
+                            ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getUser().getIdLong() + ".json"),
+                            "{}"
+                        );
+
+                        event.getGuild().ban(event.getUser(), 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
+                    }
                 }
 
                 try {
