@@ -7,8 +7,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.time.Duration;
 
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getFileContent;
 
 /**
@@ -19,6 +21,7 @@ public class SendReport extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("report")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
         final File REPORT_CHANNEL_FILE = new File(ofGeneralSettingWithJson("reportchannel", event.getGuild().getIdLong()));
 
         if (REPORT_CHANNEL_FILE.exists()) {

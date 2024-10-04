@@ -8,8 +8,10 @@ import java.io.File;
 import java.io.FileWriter;
 
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGuildWhitelistMemberWithJson;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for enabling the whitelist system on a guild
@@ -19,6 +21,7 @@ public class EnableWhitelist extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("enablewhitelist")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         for (Member member : event.getGuild().getMembers()) {
             addFile(

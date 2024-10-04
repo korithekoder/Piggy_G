@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.File;
 
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
 
 /**
@@ -15,6 +17,7 @@ public class Unpermaban extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("unpermaban")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         File permabannedUserFile = new File(ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getOption("user").getAsUser().getIdLong() + ".json"));
 

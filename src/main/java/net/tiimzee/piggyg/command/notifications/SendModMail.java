@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import static java.lang.System.out;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getNameWithoutExtension;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.getFileContent;
@@ -31,6 +32,8 @@ public class SendModMail extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("sendmodmail")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
+        
         checkForCensoredWords(event.getOption("message").getAsString(), event.getGuild().getIdLong(), event.getGuild(), event.getUser(), event);
         final File MAIL_CHANNEL_ID = new File(ofGeneralSettingWithJson("mailchannel", event.getGuild().getIdLong()));
 

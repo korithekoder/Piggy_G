@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileWriter;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for setting a reports channel for a guild
@@ -17,6 +19,7 @@ public class SetReportChannel extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("setreportchannel")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         final long GUILD_ID = event.getGuild().getIdLong();
         final long CHANNEL_ID = event.getOption("channel").getAsChannel().getIdLong();

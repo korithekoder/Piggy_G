@@ -9,7 +9,9 @@ import java.io.FileWriter;
 import java.util.function.Supplier;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofCensoredWordWithJson;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command for adding a censored word to a guild
@@ -19,6 +21,7 @@ public class AddCensoredWord extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) throws JSONException {
         if (!event.getName().equals("addcensoredword")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         try {
             final long GUILD_ID = event.getGuild().getIdLong();

@@ -18,7 +18,7 @@
  * When Piggy_G gets ran, it will check for any missing
  * important folders and files that it relies on. It will get most
  * of it, but it needs the C: drive and a proper user folder. If it isn't there, the bot will
- * REFUSE to work properly.
+ * REFUSE to work properly. 
  */
 
 package net.tiimzee.piggyg;

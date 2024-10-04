@@ -12,17 +12,18 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for sending goofy ahh DMs to people on the server
- * ...maybe add a variant where you can send a DM to anyone outside of the server?
  */
 public class Troll extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("troll")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
         if (event.getOption("message").getAsString().length() > 2000) {
             event.reply("Sorry fam, but that message too big...\nlike your ***MO-***").queue();
             return;

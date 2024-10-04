@@ -8,8 +8,8 @@ public class ResourceDirectory {
 
     // Used for when you don't need a specific part of a directory (in the "resources" folder)
 
-    public static String ofResource(String dir) {
-        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\" + dir;
+    public static String ofResource(String trailingDir) {
+        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\" + trailingDir;
     }
 
     public static String ofServer(long guildID) {

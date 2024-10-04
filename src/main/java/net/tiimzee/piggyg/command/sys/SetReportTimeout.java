@@ -1,7 +1,5 @@
 package net.tiimzee.piggyg.command.sys;
 
-import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
-
 import java.io.File;
 import java.io.FileWriter;
 
@@ -9,12 +7,16 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 
 public class SetReportTimeout extends ListenerAdapter {
     
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("setreporttimeout")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         File reportTimeoutFile = new File(ofSysSetting(event.getGuild().getIdLong(), "reporttimeout.json"));
 

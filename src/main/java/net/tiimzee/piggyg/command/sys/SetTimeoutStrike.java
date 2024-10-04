@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileWriter;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for setting a strike with the timeout type
@@ -17,6 +19,7 @@ public class SetTimeoutStrike extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("settimeoutstrike")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         File strikeFile = new File(ofSysSetting(event.getGuild().getIdLong(), "setstrikes\\" + event.getOption("strike").getAsInt() + ".json"));
 

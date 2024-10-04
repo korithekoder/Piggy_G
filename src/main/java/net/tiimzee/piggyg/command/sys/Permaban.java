@@ -8,7 +8,9 @@ import java.util.concurrent.TimeUnit;
 
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofSysSetting;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for permabanning a user from the guild
@@ -18,6 +20,7 @@ public class Permaban extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("permaban")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         if (!new File(ofSysSetting(event.getGuild().getIdLong(), "permabans")).exists()) {
             addFolder(ofSysSetting(event.getGuild().getIdLong(), "permabans"));

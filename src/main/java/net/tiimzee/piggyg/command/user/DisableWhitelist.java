@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileWriter;
 
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
+import static net.tiimzee.piggyg.resource.ResourceDirectory.ofServer;
 
 /**
  * Discord command used for disabling the whitelist system on a guild
@@ -17,6 +19,7 @@ public class DisableWhitelist extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("disablewhitelist")) return;
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         final File WHITELIST_SETTING = new File(ofGeneralSettingWithJson("iswhitelistenabled", event.getGuild().getIdLong()));
 

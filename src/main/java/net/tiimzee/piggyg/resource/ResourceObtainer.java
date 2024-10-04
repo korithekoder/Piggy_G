@@ -1,5 +1,6 @@
 package net.tiimzee.piggyg.resource;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import org.json.JSONObject;
 
@@ -13,6 +14,7 @@ import java.util.Scanner;
 import java.util.function.Supplier;
 
 import static java.lang.System.out;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
 
 /**
@@ -125,7 +127,10 @@ public class ResourceObtainer {
      * @param guildID ID of the guild to check the member in
      * @return boolean
      */
-    public static boolean isUserBanned(User user, long guildID) {
+    public static boolean isUserBanned(User user, long guildID, Guild guild) {
+
+        if (!new File(ofServer(guild.getIdLong())).exists()) addServerDirectory(guild.getIdLong(), guild.getMembers(), guild);
+
         File permabansFolder = new File(ofSysSetting(guildID, "permabans"));
         File[] permabannedUsers = permabansFolder.listFiles();
         ArrayList<Long> permabannedUsersAl = new ArrayList<>();

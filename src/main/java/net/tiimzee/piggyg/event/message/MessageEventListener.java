@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFile;
 import static net.tiimzee.piggyg.resource.ResourceCreator.addFolder;
+import static net.tiimzee.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.tiimzee.piggyg.resource.ResourceDirectory.*;
 import static net.tiimzee.piggyg.resource.ResourceObtainer.*;
 
@@ -25,6 +26,9 @@ public class MessageEventListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
+
         if (event.getAuthor().isBot()) return;  // Ignores the message if the author is a bot
         if (event.getMessage().isWebhookMessage()) return;  // Ignores the message if it's a webhook message
 
@@ -77,7 +81,7 @@ public class MessageEventListener extends ListenerAdapter {
             );
         }
 
-        if (strikeCountFile.exists() && !event.getMember().isOwner() && !isUserBanned(user, guildID)) {
+        if (strikeCountFile.exists() && !event.getMember().isOwner() && !isUserBanned(user, guildID, guild)) {
             for (String word : alCensoredWords) {
                 if (message.toLowerCase().contains(word)) {
                     try {
@@ -152,7 +156,7 @@ public class MessageEventListener extends ListenerAdapter {
                     break;
                 }
             }
-        } else if (isUserBanned(user, guildID)) {
+        } else if (isUserBanned(user, guildID, guild)) {
             event.getGuild().ban(user, 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
 
             while (new File(ofMember(user.getIdLong(), guildID)).exists()) {
