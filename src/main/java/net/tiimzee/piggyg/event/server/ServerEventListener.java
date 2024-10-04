@@ -53,78 +53,80 @@ public class ServerEventListener extends ListenerAdapter {
         }
 
         if (!isUserBanned(event.getUser(), event.getGuild().getIdLong(), event.getGuild())) {
-            if (isUserWhitelisted(event.getUser(), event.getGuild().getIdLong()) && isWhitelistEnabled(event.getGuild().getIdLong())) {
-                addFolder(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong()));
-                addFolder(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes"));
+            if (isWhitelistEnabled(event.getGuild().getIdLong())) {
+                if (isUserWhitelisted(event.getUser(), event.getGuild().getIdLong())) {
+                    addFolder(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong()));
+                    addFolder(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes"));
 
-                if (!new File(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json")).exists()) {
-                    addFile(
-                        ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
-                        "{\n  \"count\": 0\n}"
-                    );
-                }
-            } else {
-                event.getGuild().kick(event.getUser()).queue();
-
-                JSONObject data = new JSONObject(getFileContent(userJoinAttempts));
-                int count = data.getInt("count");
-                count++;
-
-                switch (count) {
-                    case 1 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # Hey man, I can't let you through, dawg
-                    You ain't whitelisted
-                    """)).queue();
-                    case 2 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # Uhh, have I seen you before?
-                    Hippity hop your way on out of here.
-                    You still ain't whitelisted dawg :man_facepalming:
-                    """)).queue();
-                    case 3 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # Man, I get it, you wanna join the server
-                    ...but you ain't whitelisted.
-                    Get yo ass up on out of here, before you
-                    become a nationally known opp. :boom::gun:
-                    Thank you.
-                    """)).queue();
-                    case 4 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                    # ***Stop trying***
-                    I ain't gonn' let you through until you get whitelisted.
-                    If you really wanna join the server, then ask a mod,
-                    an admin. ***Don't come to me***.
-                    ...you fucking ***dumbass***. :man_facepalming:
-                    """)).queue();
-                    case 5 -> {
-                        event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
-                        # ***This is yo fifth time***
-                        Fuck off pigga :rage::middle_finger:
-                        (you know why)
-                        """)).queue();
-
-                        if (!new File(ofSysSetting(event.getGuild().getIdLong(), "permabans")).exists()) {
-                            addFolder(ofSysSetting(event.getGuild().getIdLong(), "permabans"));
-                        }
-                
+                    if (!new File(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json")).exists()) {
                         addFile(
-                            ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getUser().getIdLong() + ".json"),
-                            "{}"
+                            ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
+                            "{\n  \"count\": 0\n}"
                         );
-
-                        event.getGuild().ban(event.getUser(), 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
                     }
-                }
-
-                try {
-                    FileWriter writer = new FileWriter(userJoinAttempts);
-                    writer.write("{\n  \"count\": " + count + "\n}");
-                    writer.close();
-                } catch (Exception ignored) {
-                }
-
-                while (new File(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong())).exists()) {
+                } else {
+                    event.getGuild().kick(event.getUser()).queue();
+    
+                    JSONObject data = new JSONObject(getFileContent(userJoinAttempts));
+                    int count = data.getInt("count");
+                    count++;
+    
+                    switch (count) {
+                        case 1 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Hey man, I can't let you through, dawg
+                        You ain't whitelisted
+                        """)).queue();
+                        case 2 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Uhh, have I seen you before?
+                        Hippity hop your way on out of here.
+                        You still ain't whitelisted dawg :man_facepalming:
+                        """)).queue();
+                        case 3 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Man, I get it, you wanna join the server
+                        ...but you ain't whitelisted.
+                        Get yo ass up on out of here, before you
+                        become a nationally known opp. :boom::gun:
+                        Thank you.
+                        """)).queue();
+                        case 4 -> event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # ***Stop trying***
+                        I ain't gonn' let you through until you get whitelisted.
+                        If you really wanna join the server, then ask a mod,
+                        an admin. ***Don't come to me***.
+                        ...you fucking ***dumbass***. :man_facepalming:
+                        """)).queue();
+                        case 5 -> {
+                            event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                            # ***This is yo fifth time***
+                            Fuck off pigga :rage::middle_finger:
+                            (you know why)
+                            """)).queue();
+    
+                            if (!new File(ofSysSetting(event.getGuild().getIdLong(), "permabans")).exists()) {
+                                addFolder(ofSysSetting(event.getGuild().getIdLong(), "permabans"));
+                            }
+                    
+                            addFile(
+                                ofSysSetting(event.getGuild().getIdLong(), "permabans\\" + event.getUser().getIdLong() + ".json"),
+                                "{}"
+                            );
+    
+                            event.getGuild().ban(event.getUser(), 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
+                        }
+                    }
+    
                     try {
-                        deleteDirectory(Path.of(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong())));
+                        FileWriter writer = new FileWriter(userJoinAttempts);
+                        writer.write("{\n  \"count\": " + count + "\n}");
+                        writer.close();
                     } catch (Exception ignored) {
+                    }
+    
+                    while (new File(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong())).exists()) {
+                        try {
+                            deleteDirectory(Path.of(ofMember(event.getUser().getIdLong(), event.getGuild().getIdLong())));
+                        } catch (Exception ignored) {
+                        }
                     }
                 }
             }

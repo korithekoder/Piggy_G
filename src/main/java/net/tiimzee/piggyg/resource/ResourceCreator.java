@@ -149,7 +149,7 @@ public class ResourceCreator {
      */
     public static void registerCommands(Guild guild) {
         guild.upsertCommand("troll", "Send someone on the server a DM (without telling them you sent it)").addOptions(
-            new OptionData(OptionType.NUMBER, "user", "The user you want to troll", true),
+            new OptionData(OptionType.USER, "user", "The user you want to troll", true),
             new OptionData(OptionType.STRING, "message", "The funny message you want to send", true).setMaxLength(2000)
         ).queue();
         guild.upsertCommand("addcensoredword", "Adds a censored word that is not allowed to be said").addOptions(

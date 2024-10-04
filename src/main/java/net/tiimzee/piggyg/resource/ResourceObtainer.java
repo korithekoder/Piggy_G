@@ -172,7 +172,7 @@ public class ResourceObtainer {
                 }
             }
         } else {
-            return false;
+            return true;
         }
 
         for (long userName : whitelistedUsersAl) {
