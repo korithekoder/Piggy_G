@@ -8,6 +8,7 @@ import java.io.File;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFile;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofGuildWhitelistMemberWithJson;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofPermabannedMemberWithJson;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
 import static net.korithekoder.piggyg.resource.ResourceObtainer.isWhitelistEnabled;
 
@@ -26,12 +27,19 @@ public class WhitelistMember extends ListenerAdapter {
         if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
         final File MEMBER_TO_WHITELIST = new File(ofGuildWhitelistMemberWithJson(Long.parseLong(event.getOption("user_id").getAsString()), event.getGuild().getIdLong()));
+        final File MEMBER_PERMABAN_FILE = new File(ofPermabannedMemberWithJson(event.getOption("user_id").getAsLong(), event.getGuild().getIdLong()));
+
+        // Delete the member's permaban file (if it exists)
+        if (MEMBER_PERMABAN_FILE.exists()) {
+            event.getGuild().unban(event.getGuild().getMemberById(event.getOption("user_id").getAsLong()));
+            while (MEMBER_PERMABAN_FILE.delete());
+        } 
 
         if (isWhitelistEnabled(event.getGuild().getIdLong())) {
             if (!MEMBER_TO_WHITELIST.exists()) {
                 addFile(
-                        ofGuildWhitelistMemberWithJson(event.getOption("user_id").getAsLong(), event.getGuild().getIdLong()),
-                        "{}"
+                    ofGuildWhitelistMemberWithJson(event.getOption("user_id").getAsLong(), event.getGuild().getIdLong()),
+                    "{}"
                 );
                 event.reply("'Aight gang, the user been whitelisted").queue();
             } else {

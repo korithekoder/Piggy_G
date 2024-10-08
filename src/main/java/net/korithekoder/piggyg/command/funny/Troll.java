@@ -24,6 +24,7 @@ public class Troll extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("troll")) return;
         if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
+        
         if (event.getOption("message").getAsString().length() > 2000) {
             event.reply("Sorry fam, but that message too big...\nlike your ***MO-***").queue();
             return;

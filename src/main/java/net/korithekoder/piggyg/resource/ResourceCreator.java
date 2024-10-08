@@ -58,7 +58,6 @@ public class ResourceCreator {
     /**
      * Creates an entire new server directory in Piggy_G's AppData folder.
      * @param event Event object to be passed down
-     * @return void
      */
     public static void addServerDirectory(GuildJoinEvent event) {
 
@@ -148,55 +147,135 @@ public class ResourceCreator {
      * @param guild The guild object used to upsert the commands
      */
     public static void registerCommands(Guild guild) {
+
+        /**
+         * Upsert troll command
+         */
         guild.upsertCommand("troll", "Send someone on the server a DM (without telling them you sent it)").addOptions(
             new OptionData(OptionType.USER, "user", "The user you want to troll", true),
             new OptionData(OptionType.STRING, "message", "The funny message you want to send", true).setMaxLength(2000)
         ).queue();
+
+        /**
+         * Upsert addcensoredword command
+         */
         guild.upsertCommand("addcensoredword", "Adds a censored word that is not allowed to be said").addOptions(
             new OptionData(OptionType.STRING, "word", "Word to be censored", true).setMaxLength(2000),
             new OptionData(OptionType.INTEGER, "addstrikes", "Adds how many strikes to the user's count (default value is 1, max is 9999999999999)", false).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert setstrikecount command
+         */
         guild.upsertCommand("setstrikecount", "Sets the maximum strikes a user can get before they are banned").addOptions(
             new OptionData(OptionType.INTEGER, "count", "Count to be set (max is 9999999999999)", true).setMinValue(0).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert removecensoredword command
+         */
         guild.upsertCommand("removecensoredword", "Removes an existing censored word").addOptions(
             new OptionData(OptionType.STRING, "word", "Word to be marked for removal", true).setMaxLength(2000)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert setmailchannel command
+         */
         guild.upsertCommand("setmailchannel", "Sets the channel admins receive mail and messages").addOptions(
             new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_CHANNEL)).queue();
+
+        /**
+         * Upsert sendmodmail command
+         */
         guild.upsertCommand("sendmodmail", "Send mail to the set mail channel").addOptions(
             new OptionData(OptionType.STRING, "message", "Mail to be sent", true).setMaxLength(2000)
         ).queue();
+
+        /**
+         * Upsert setreportchannel command
+         */
         guild.upsertCommand("setreportchannel", "Sets the channel admins receive user reports").addOptions(
             new OptionData(OptionType.CHANNEL, "channel", "The channel to be set", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_CHANNEL)).queue();
+
+        /**
+         * Upsert report command
+         */
         guild.upsertCommand("report", "Report someone on this server. The admins will receive a report (if they set the channel)").addOptions(
             new OptionData(OptionType.USER, "user", "User to report", true),
             new OptionData(OptionType.STRING, "reason", "Reason why user is being reported (please keep this part around one word)", true).setMaxLength(200),
             new OptionData(OptionType.STRING, "description", "Details on what happened", true)
         ).queue();
+
+        /**
+         * Upsert settimeoutstrike command
+         */
         guild.upsertCommand("settimeoutstrike", "Sets a strike to be a server timeout (for a set time)").addOptions(
             new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a timeout", true).setMinValue(1).setMaxValue(9999999999999L),
             new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
             new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
+
+        /**
+         * Upsert setkickstrike command
+         */
         guild.upsertCommand("setkickstrike", "Sets a strike to be a server kick").addOptions(
             new OptionData(OptionType.INTEGER, "strike", "Strike to be set as a kick", true).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
+
+        /**
+         * Upsert permaban command
+         */
         guild.upsertCommand("permaban", "Permanently bans a user (rather than the 7 days limit)").addOptions(
             new OptionData(OptionType.USER, "user", "User to permanently ban from this server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)).queue();
+
+        /**
+         * Upsert unpermaban command
+         */
         guild.upsertCommand("unpermaban", "Revokes the permaban from a permanently banned user").addOptions(
             new OptionData(OptionType.USER, "user", "User to revoke permaban from this server", true)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)).queue();
+
+        /**
+         * Upsert obtaintrolllogs command
+         */
         guild.upsertCommand("obtaintrolllogs", "Gets the .txt troll logs").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert obtaindisplaynamelogs command
+         */
         guild.upsertCommand("obtaindisplaynamelogs", "Gets the .txt display name change logs").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert enablewhitelist command
+         */
         guild.upsertCommand("enablewhitelist", "ENABLES the whitelist system").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert disablewhitelist command
+         */
         guild.upsertCommand("disablewhitelist", "DISABLES the whitelist system").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert whitelist command
+         */
         guild.upsertCommand("whitelist", "Add a member to the whitelist").addOptions(
             new OptionData(OptionType.STRING, "user_id", "User to whitelist to the server", true)
-        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
+
+        /**
+         * Upsert blacklist command
+         */
+        guild.upsertCommand("blacklist", "Blacklist a member from the server").addOptions(
+            new OptionData(OptionType.USER, "user", "User to blacklist", true),
+            new OptionData(OptionType.STRING, "reason", "Reason for blacklist", false)
+        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)).queue();
+
+        /**
+         * Upsert setreporttimeout command
+         */
         guild.upsertCommand("setreporttimeout", "Set the timeout for when a user is reported using the /report command").addOptions(
             new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
             new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)

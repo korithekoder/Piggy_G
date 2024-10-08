@@ -3,6 +3,7 @@ package net.korithekoder.piggyg.event.server;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
@@ -33,6 +34,16 @@ public class ServerEventListener extends ListenerAdapter {
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         addServerDirectory(event);
+    }
+
+    @Override
+    public void onGuildLeave(GuildLeaveEvent event) {
+        while (new File(ofServer(event.getGuild().getIdLong())).exists()) {
+            try {
+                deleteDirectory(Path.of(ofServer(event.getGuild().getIdLong())));
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     @Override

@@ -100,6 +100,7 @@ public class Main {
         client.addEventListener(new ObtainTrollLogs());
         client.addEventListener(new ObtainDisplayNameLogs());
         client.addEventListener(new WhitelistMember());
+        client.addEventListener(new BlacklistMember());
         client.addEventListener(new EnableWhitelist());
         client.addEventListener(new DisableWhitelist());
         client.addEventListener(new SetReportTimeout());

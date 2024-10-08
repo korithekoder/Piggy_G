@@ -28,6 +28,14 @@ public class ResourceDirectory {
         return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\memory\\members\\" + memberID + "\\" + trailingDir;
     }
 
+    public static String ofPermabannedMember(long memberID, long guildID) {
+        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\sys\\permabans\\" + memberID;
+    }
+
+    public static String ofPermabannedMemberWithJson(long memberID, long guildID) {
+        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\sys\\permabans\\" + memberID + ".json";
+    }
+
     public static String ofCensoredWord(String word, long guildID) {
         return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\censoredwords\\" + word;
     }
