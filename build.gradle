@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'net.tiimzee.piggyg'
+group = 'net.korithekoder.piggyg'
 version = '1.0.0'
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 
 jar {
     manifest {
-        attributes "Main-Class" : "net.tiimzee.piggyg.Main"
+        attributes "Main-Class" : "net.korithekoder.piggyg.Main"
     }
 
     from {
