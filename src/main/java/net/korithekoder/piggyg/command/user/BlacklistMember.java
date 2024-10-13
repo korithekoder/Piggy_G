@@ -25,8 +25,12 @@ public class BlacklistMember extends ListenerAdapter {
 
             while (memberFile.delete());
 
-            event.getGuild().kick(event.getOption("user").getAsUser()).queue();
-            event.reply("Aight' gang, the user has been blacklisted").queue();
+            try {
+                event.getGuild().kick(event.getOption("user").getAsUser()).queue();
+                event.reply("Aight' gang, the user has been blacklisted").queue();
+            } catch (Exception e) {
+                event.reply("Sorry gang, can't blacklist that member\nThey have a higher/equal role to you").queue();
+            }
         } else {
             event.reply("# Pigga...\nYou can't blacklist someone if the whitelist isn't even on, man :man_facepalming:").queue();
         }
