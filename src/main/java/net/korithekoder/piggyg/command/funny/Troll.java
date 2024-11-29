@@ -45,8 +45,15 @@ public class Troll extends ListenerAdapter {
 
         try {
             OptionMapping message = event.getOption("message");
+            OptionMapping attachment = event.getOption("attachment");
+            OptionMapping anonymous = event.getOption("anonymous");
             user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(message.getAsString())).queue();
-            event.reply("'Kay gang, the user has been trolled").queue();
+            if (!(attachment.getAsAttachment() == null)) user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(event.getOption("attachment").getAsAttachment().getProxyUrl())).queue();
+            try {
+                if (!(anonymous.getAsBoolean()) || anonymous.equals(null)) event.reply("'Kay gang, the user has been trolled").queue();
+            } catch (Exception e) {
+                event.reply("'Kay gang, the user has been trolled").queue();
+            }
         } catch (Exception e) {
             event.reply("Sorry fam, but the troll didn't send :sob::skull:").queue();
         }

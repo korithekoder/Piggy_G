@@ -54,7 +54,7 @@ public class Main {
     /**
      * JDA object used throughout the Main.java file
      */
-    public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+    public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES)
         .setEventPassthrough(true)
         .setMemberCachePolicy(MemberCachePolicy.ALL)
         .setChunkingFilter(ChunkingFilter.ALL)

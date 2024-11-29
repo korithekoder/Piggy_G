@@ -153,7 +153,9 @@ public class ResourceCreator {
          */
         guild.upsertCommand("troll", "Send someone on the server a DM (without telling them you sent it)").addOptions(
             new OptionData(OptionType.USER, "user", "The user you want to troll", true),
-            new OptionData(OptionType.STRING, "message", "The funny message you want to send", true).setMaxLength(2000)
+            new OptionData(OptionType.STRING, "message", "The funny message you want to send", true),
+            new OptionData(OptionType.ATTACHMENT, "attachment", "OPTIONAL: Add any attachment to the funny message", false),
+            new OptionData(OptionType.BOOLEAN, "anonymous", "OPTIONAL: Do not make the bot reply when the troll was sent", false)
         ).queue();
 
         /**
@@ -247,6 +249,11 @@ public class ResourceCreator {
          * Upsert obtaindisplaynamelogs command
          */
         guild.upsertCommand("obtaindisplaynamelogs", "Gets the .txt display name change logs").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert obtainvoicechannellogs command
+         */
+        // guild.upsertCommand("obtainvoicechannellogs", "Gets the .txt voice channel logs when people join/leave").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
 
         /**
          * Upsert enablewhitelist command

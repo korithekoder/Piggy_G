@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONObject;
 
@@ -231,6 +232,40 @@ public class ServerEventListener extends ListenerAdapter {
             DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("HH:mm:ss");
             FileWriter writer = new FileWriter(logFile, true);
             writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + "]: \"" + oldDisplayName.get() + "\" -> \"" + event.getNewNickname() + "\"\n");
+            writer.close();
+        } catch (Exception e) {
+            out.println(e);
+        }
+    }
+
+    @Override
+    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
+        if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
+
+        File logFile = new File(ofServer(event.getGuild().getIdLong(), "logs\\voice_channel_logs.txt"));
+
+        out.println("osdkvhsodihspdihfsdpfhpsdhvspdvhpsdpfhvpsdhsph");
+
+        try {
+            if (logFile.createNewFile());
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+            Supplier<String> logText = () -> {
+                String toReturn = "";
+                if (!(event.getChannelJoined() == null) && (event.getChannelLeft() == null)) {
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " JOINED " + event.getChannelJoined().getName();
+                } else if (!(event.getChannelJoined() == null) && !(event.getChannelLeft() == null)) {
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " JOINED " + event.getChannelJoined().getName() + " FROM " + event.getChannelLeft().getName();
+                } else if ((event.getChannelJoined() == null) && !(event.getChannelLeft() == null)) {
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " LEFT " + event.getChannelLeft().getName();
+                }
+                return toReturn;
+            };
+
+            FileWriter writer = new FileWriter(logFile, true);
+            writer.write(logText.get());
             writer.close();
         } catch (Exception e) {
             out.println(e);
