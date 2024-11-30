@@ -41,7 +41,7 @@ public class Troll extends ListenerAdapter {
             try {
                 writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][ATTACHMENT]: " + event.getOption("attachment").getAsAttachment().getProxyUrl() + "\n");
             } catch (Exception e) {
-                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][ATTACHMENT]: *none*");
+                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][ATTACHMENT]: *none*\n");
             }
             writer.close();
         } catch (Exception e) {
