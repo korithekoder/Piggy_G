@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.korithekoder.piggyg.command.funny.*;
 import net.korithekoder.piggyg.command.lang.*;
 import net.korithekoder.piggyg.command.notifications.*;
@@ -55,6 +56,7 @@ public class Main {
      * JDA object used throughout the Main.java file
      */
     public static JDA client = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES)
+        .enableCache(CacheFlag.VOICE_STATE)
         .setEventPassthrough(true)
         .setMemberCachePolicy(MemberCachePolicy.ALL)
         .setChunkingFilter(ChunkingFilter.ALL)
@@ -99,6 +101,7 @@ public class Main {
         client.addEventListener(new Unpermaban());
         client.addEventListener(new ObtainTrollLogs());
         client.addEventListener(new ObtainDisplayNameLogs());
+        client.addEventListener(new ObtainVoiceChannelLogs());
         client.addEventListener(new WhitelistMember());
         client.addEventListener(new BlacklistMember());
         client.addEventListener(new EnableWhitelist());

@@ -244,8 +244,6 @@ public class ServerEventListener extends ListenerAdapter {
 
         File logFile = new File(ofServer(event.getGuild().getIdLong(), "logs\\voice_channel_logs.txt"));
 
-        out.println("osdkvhsodihspdihfsdpfhpsdhvspdvhpsdpfhvpsdhsph");
-
         try {
             if (logFile.createNewFile());
 
@@ -255,11 +253,11 @@ public class ServerEventListener extends ListenerAdapter {
             Supplier<String> logText = () -> {
                 String toReturn = "";
                 if (!(event.getChannelJoined() == null) && (event.getChannelLeft() == null)) {
-                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " JOINED " + event.getChannelJoined().getName();
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getUser().getName() + " JOINED " + event.getChannelJoined().getName() + "\n";
                 } else if (!(event.getChannelJoined() == null) && !(event.getChannelLeft() == null)) {
-                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " JOINED " + event.getChannelJoined().getName() + " FROM " + event.getChannelLeft().getName();
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getUser().getName() + " JOINED " + event.getChannelJoined().getName() + " FROM " + event.getChannelLeft().getName() + "\n";
                 } else if ((event.getChannelJoined() == null) && !(event.getChannelLeft() == null)) {
-                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getNickname() + " LEFT " + event.getChannelLeft().getName();
+                    toReturn = "[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "]: @" + event.getMember().getUser().getName() + " LEFT " + event.getChannelLeft().getName() + "\n";
                 }
                 return toReturn;
             };

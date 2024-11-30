@@ -253,7 +253,7 @@ public class ResourceCreator {
         /**
          * Upsert obtainvoicechannellogs command
          */
-        // guild.upsertCommand("obtainvoicechannellogs", "Gets the .txt voice channel logs when people join/leave").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+        guild.upsertCommand("obtainvoicechannellogs", "Gets the .txt voice channel logs when people join/leave").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
 
         /**
          * Upsert enablewhitelist command

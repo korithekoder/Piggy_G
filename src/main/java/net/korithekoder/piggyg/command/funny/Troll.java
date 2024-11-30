@@ -37,11 +37,11 @@ public class Troll extends ListenerAdapter {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("HH:mm:ss");
             FileWriter writer = new FileWriter(logFile, true);
-            writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][MESSAGE]: " + event.getOption("message").getAsString() + "\n");
+            writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getMember().getUser().getName() + " TO @" + event.getOption("user").getAsUser().getName() + "][MESSAGE]: " + event.getOption("message").getAsString() + "\n");
             try {
-                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][ATTACHMENT]: " + event.getOption("attachment").getAsAttachment().getProxyUrl() + "\n");
+                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getMember().getUser().getName() + " TO @" + event.getOption("user").getAsUser().getName() + "][ATTACHMENT]: " + event.getOption("attachment").getAsAttachment().getProxyUrl() + "\n");
             } catch (Exception e) {
-                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getUser().getGlobalName() + " TO @" + event.getOption("user").getAsUser().getGlobalName() + "][ATTACHMENT]: *none*\n");
+                writer.write("[LOG][" + dtf.format(LocalDate.now()) + "..." + dtf2.format(LocalTime.now()) + "][@" + event.getMember().getUser().getName() + " TO @" + event.getOption("user").getAsUser().getName() + "][ATTACHMENT]: *none*\n");
             }
             writer.close();
         } catch (Exception e) {
