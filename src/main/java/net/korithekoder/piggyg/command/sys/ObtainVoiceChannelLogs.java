@@ -12,8 +12,6 @@ import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
 /**
  * Discord command used for obtaining all of the logs when users
  * join and leave voice channels.
- * 
- * NOTE: THIS DOES NOT WORK.
  */
 public class ObtainVoiceChannelLogs extends ListenerAdapter {
     
