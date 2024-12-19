@@ -1,21 +1,34 @@
 package net.korithekoder.piggyg.resource;
 
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
-import org.json.JSONObject;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import static java.lang.System.out;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static java.lang.System.out;
+import org.json.JSONObject;
+
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
+import static net.korithekoder.piggyg.resource.ResourceCreator.addFile;
+import static net.korithekoder.piggyg.resource.ResourceCreator.addFolder;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addServerDirectory;
-import static net.korithekoder.piggyg.resource.ResourceDirectory.*;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofGuildWhitelist;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofMember;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofMemory;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofSysSetting;
 
 /**
  * Core class for obtaining data from files and folders
@@ -131,21 +144,13 @@ public class ResourceObtainer {
 
         if (!new File(ofServer(guild.getIdLong())).exists()) addServerDirectory(guild.getIdLong(), guild.getMembers(), guild);
 
-        File permabansFolder = new File(ofSysSetting(guildID, "permabans"));
-        File[] permabannedUsers = permabansFolder.listFiles();
-        ArrayList<Long> permabannedUsersAl = new ArrayList<>();
+        ArrayList<Long> permabannedUsers = getFilesNamesAsLong(ofSysSetting(guildID, "permabans"));
 
-        if (permabannedUsers != null) {
-            for (File userFile : permabannedUsers) {
-                if (userFile.isFile()) {
-                    permabannedUsersAl.add(getNameWithoutExtensionAsLong(userFile.getName()));
-                }
-            }
-        } else {
+        if (permabannedUsers == null) {
             return false;
         }
 
-        for (long userName : permabannedUsersAl) {
+        for (long userName : permabannedUsers) {
             if (user.getIdLong() == userName) {
                 return true;
             }
@@ -154,34 +159,113 @@ public class ResourceObtainer {
         return false;
     }
 
-    /**
-     * Checks if a particullar user on a server is whitelisted
-     * @param user User to check if whitelisted
-     * @param guildID ID of the guild to check the member in
-     * @return boolean
-     */
-    public static boolean isUserWhitelisted(User user, final long GUILD_ID) {
-        File whitelistFolder = new File(ofGuildWhitelist(GUILD_ID));
-        File[] whitelistedUsers = whitelistFolder.listFiles();
-        ArrayList<Long> whitelistedUsersAl = new ArrayList<>();
+    public static void checkIsMemberWhitelisted(Guild guild, User user, File userJoinAttempts) {
 
-        if (whitelistedUsers != null) {
-            for (File userFile : whitelistedUsers) {
-                if (userFile.isFile()) {
-                    whitelistedUsersAl.add(getNameWithoutExtensionAsLong(userFile.getName()));
+        ArrayList<Long> whitelistedUsers = getFilesNamesAsLong(ofGuildWhitelist(guild.getIdLong()));
+        boolean isUserWhitelisted = false;
+
+        if (whitelistedUsers == null) {
+            isUserWhitelisted = true;
+        }
+
+        for (long userId : whitelistedUsers) {
+            if (user.getIdLong() == userId) {
+                isUserWhitelisted = true;
+            }
+        }
+
+        if (!isUserBanned(user, guild.getIdLong(), guild)) {
+            if (isWhitelistEnabled(guild.getIdLong())) {
+                if (isUserWhitelisted) {
+                    addFolder(ofMember(user.getIdLong(), guild.getIdLong()));
+                    addFolder(ofMember(user.getIdLong(), guild.getIdLong(), "strikes"));
+
+                    if (!new File(ofMember(user.getIdLong(), guild.getIdLong(), "strikes\\count.json")).exists()) {
+                        addFile(
+                            ofMember(user.getIdLong(), guild.getIdLong(), "strikes\\count.json"),
+                            "{\n  \"count\": 0\n}"
+                        );
+                    }
+                } else {
+                    guild.kick(user).queue();
+
+                    JSONObject data = new JSONObject(getFileContent(userJoinAttempts));
+                    int count = data.getInt("count");
+                    count++;
+
+                    switch (count) {
+                        case 1 ->
+                        user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Hey man, I can't let you through, dawg
+                        You ain't whitelisted
+                        """)).queue();
+                        case 2 ->
+                        user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Uhh, have I seen you before?
+                        Hippity hop your way on out of here.
+                        You still ain't whitelisted dawg :man_facepalming:
+                        """)).queue();
+                        case 3 ->
+                        user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # Man, I get it, you wanna join the server
+                        ...but you ain't whitelisted.
+                        Get yo ass up on out of here, before you
+                        become a nationally known opp. :boom::gun:
+                        Thank you.
+                        """)).queue();
+                        case 4 ->
+                        user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                        # ***Stop trying***
+                        I ain't gonn' let you through until you get whitelisted.
+                        If you really wanna join the server, then ask a mod,
+                        an admin. ***Don't come to me***.
+                        ...you fucking ***dumbass***. :man_facepalming:
+                        """)).queue();
+                        case 5 -> {
+                            user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("""
+                            # ***This is yo fifth time***
+                            Fuck off pigga :rage::middle_finger:
+                            (you know why)
+                            """)).queue();
+
+                            if (!new File(ofSysSetting(guild.getIdLong(), "permabans")).exists()) {
+                                addFolder(ofSysSetting(guild.getIdLong(), "permabans"));
+                            }
+
+                            addFile(
+                                ofSysSetting(guild.getIdLong(), "permabans\\" + user.getIdLong() + ".json"),
+                                "{}"
+                            );
+
+                            guild.ban(user, 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
+                        }
+                    }
+
+                    try {
+                        FileWriter writer = new FileWriter(userJoinAttempts);
+                        writer.write("{\n  \"count\": " + count + "\n}");
+                        writer.close();
+                    } catch (Exception ignored) {
+                    }
+
+                    while (new File(ofMember(guild.getIdLong(), guild.getIdLong())).exists()) {
+                        try {
+                            deleteDirectory(Path.of(ofMember(guild.getIdLong(), guild.getIdLong())));
+                        } catch (Exception ignored) {
+                        }
+                    }
                 }
             }
         } else {
-            return true;
-        }
+            guild.ban(user, 7, TimeUnit.DAYS).reason("Permabanned, cuz").queue();
 
-        for (long userName : whitelistedUsersAl) {
-            if (user.getIdLong() == userName) {
-                return true;
+            while (new File(ofMember(user.getIdLong(), guild.getIdLong())).exists()) {
+                try {
+                    deleteDirectory(Path.of(ofMember(user.getIdLong(), guild.getIdLong())));
+                } catch (Exception ignored) {
+                }
             }
         }
-
-        return false;
     }
 
     /**
@@ -219,5 +303,44 @@ public class ResourceObtainer {
         } finally {
             if (reader != null) reader.close();
         }
+    }
+
+    public static ArrayList<File> getFilesFromFolder(String directory) {
+        if (!(new File(directory).listFiles() == null)) {
+            return new ArrayList<>(List.of(new File(directory).listFiles()));
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public static ArrayList<Long> getFilesNamesAsLong(String directory) {
+        ArrayList<File> files = getFilesFromFolder(directory);
+        ArrayList<Long> toReturn = new ArrayList<>();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    toReturn.add(getNameWithoutExtensionAsLong(file.getName()));
+                }
+            }
+            return toReturn;
+        } else {
+            return null;
+        }
+    }
+
+    public static File getUserJoinAttemptsFile(long guildId, long userId) {
+        File userJoinAttempts = new File(ofMemory(guildId, "joinattempts\\" + userId + ".json"));
+        if (!userJoinAttempts.exists()) {
+            addFile(
+                ofMemory(guildId, "joinattempts\\" + userId + ".json"),
+                """
+                {
+                  "count": 0
+                }
+                """
+            );
+        }
+        return userJoinAttempts;
     }
 }

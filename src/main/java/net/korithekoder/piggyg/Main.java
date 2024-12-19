@@ -37,7 +37,6 @@ import net.korithekoder.piggyg.command.sys.*;
 import net.korithekoder.piggyg.command.user.*;
 import net.korithekoder.piggyg.event.message.MessageEventListener;
 import net.korithekoder.piggyg.event.server.ServerEventListener;
-
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFolder;
 
 /**
@@ -90,6 +89,8 @@ public class Main {
         client.addEventListener(new Troll());
         client.addEventListener(new AddCensoredWord());
         client.addEventListener(new RemoveCensoredWord());
+        client.addEventListener(new AddNewMemberAutoRole());
+        client.addEventListener(new RemoveNewMemberAutoRole());
         client.addEventListener(new SetStrikeCount());
         client.addEventListener(new SetMailChannel());
         client.addEventListener(new SendModMail());

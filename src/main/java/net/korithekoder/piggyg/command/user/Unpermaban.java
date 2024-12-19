@@ -1,10 +1,9 @@
-package net.korithekoder.piggyg.command.sys;
-
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+package net.korithekoder.piggyg.command.user;
 
 import java.io.File;
 
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addServerDirectory;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofSysSetting;

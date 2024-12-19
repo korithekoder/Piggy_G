@@ -1,11 +1,5 @@
 package net.korithekoder.piggyg.event.message;
 
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
@@ -13,11 +7,27 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
+
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFile;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFolder;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addServerDirectory;
-import static net.korithekoder.piggyg.resource.ResourceDirectory.*;
-import static net.korithekoder.piggyg.resource.ResourceObtainer.*;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofCensoredWordWithJson;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofGeneralSettingWithJson;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofMember;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofSetStrikeWithJson;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.checkIsMemberWhitelisted;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.deleteDirectory;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.getFileContent;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.getNameWithoutExtension;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.getUserJoinAttemptsFile;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.isUserBanned;
+import static net.korithekoder.piggyg.resource.ResourceObtainer.returnFullTimeoutType;
 
 /**
  * Core class for general message listening events
@@ -29,15 +39,11 @@ public class MessageEventListener extends ListenerAdapter {
 
         if (!new File(ofServer(event.getGuild().getIdLong())).exists()) addServerDirectory(event.getGuild().getIdLong(), event.getGuild().getMembers(), event.getGuild());
 
+        checkIsMemberWhitelisted(event.getGuild(), event.getAuthor(), getUserJoinAttemptsFile(event.getGuild().getIdLong(), event.getAuthor().getIdLong()));
+
         if (event.getAuthor().isBot()) return;  // Ignores the message if the author is a bot
         if (event.getMessage().isWebhookMessage()) return;  // Ignores the message if it's a webhook message
 
-        if (isWhitelistEnabled(event.getGuild().getIdLong())) {
-            if (!isUserWhitelisted(event.getAuthor(), event.getGuild().getIdLong())) {
-                event.getGuild().kick(event.getAuthor()).reason("Fuck off, pigga (you ain't whitelisted)").queue();
-                return;
-            }
-        }
         checkForCensoredWords(event.getMessage().getContentRaw(), event.getGuild().getIdLong(), event.getGuild(), event.getAuthor(), event);
     }
 
@@ -76,8 +82,8 @@ public class MessageEventListener extends ListenerAdapter {
             addFolder(ofMember(user.getIdLong(), event.getGuild().getIdLong(), "strikes"));
 
             addFile(
-                    ofMember(user.getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
-                    "{\n  \"count\": 0\n}"
+                ofMember(user.getIdLong(), event.getGuild().getIdLong(), "strikes\\count.json"),
+                "{\n  \"count\": 0\n}"
             );
         }
 
@@ -118,9 +124,9 @@ public class MessageEventListener extends ListenerAdapter {
                                     }
                                     event.getMessage().reply(
                                             "'Ight fool, you can't be saying that kind of stuff\n" +
-                                                    "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((char) jsonData.get("timetype")) + "\n" +
-                                                    "# Reason\n" +
-                                                    "Said censored word: ***\"" + word + "\"***"
+                                            "# You have been timed out for " + jsonData.get("time") + " " + returnFullTimeoutType((char) jsonData.get("timetype")) + "\n" +
+                                            "# Reason\n" +
+                                            "Said censored word: ***\"" + word + "\"***"
                                     ).queue();
                                 } else if (jsonData.get("striketype").equals("k")) {
                                     guild.kick(user).reason("Said unwanted language, fool").queue();

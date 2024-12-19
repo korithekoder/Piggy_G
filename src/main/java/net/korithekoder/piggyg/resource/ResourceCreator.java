@@ -2,6 +2,7 @@ package net.korithekoder.piggyg.resource;
 
 import java.io.File;
 import java.io.FileWriter;
+import static java.lang.System.out;
 import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
@@ -12,8 +13,6 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-
-import static java.lang.System.out;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofMember;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
 
@@ -64,21 +63,7 @@ public class ResourceCreator {
         JDA client = event.getJDA();
         final long NEW_GUILD_ID = event.getGuild().getIdLong();
 
-        /*
-         * Add all of the folders and files for the
-         * new server
-         */
-        addFolder(ofServer(NEW_GUILD_ID));
-        addFolder(ofServer(NEW_GUILD_ID, "logs"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings\\sys"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings\\sys\\setstrikes"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings\\general"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings\\censoredwords"));
-        addFolder(ofServer(NEW_GUILD_ID, "settings\\whitelist"));
-        addFolder(ofServer(NEW_GUILD_ID, "memory"));
-        addFolder(ofServer(NEW_GUILD_ID, "memory\\members"));
-        addFolder(ofServer(NEW_GUILD_ID, "memory\\joinattempts"));
+        addNewServerFolders(NEW_GUILD_ID);
 
         for (Member member : event.getGuild().getMembers()) {
             if (!member.getUser().isBot()) {
@@ -108,21 +93,7 @@ public class ResourceCreator {
      */
     public static void addServerDirectory(long guildID, List<Member> members, Guild guild) {
 
-        /*
-         * Add all of the folders and files for the
-         * new server
-         */
-        addFolder(ofServer(guildID));
-        addFolder(ofServer(guildID, "logs"));
-        addFolder(ofServer(guildID, "settings"));
-        addFolder(ofServer(guildID, "settings\\sys"));
-        addFolder(ofServer(guildID, "settings\\sys\\setstrikes"));
-        addFolder(ofServer(guildID, "settings\\general"));
-        addFolder(ofServer(guildID, "settings\\censoredwords"));
-        addFolder(ofServer(guildID, "settings\\whitelist"));
-        addFolder(ofServer(guildID, "memory"));
-        addFolder(ofServer(guildID, "memory\\members"));
-        addFolder(ofServer(guildID, "memory\\joinattempts"));
+        addNewServerFolders(guildID);
 
         for (Member member : members) {
             if (!member.getUser().isBot()) {
@@ -140,6 +111,26 @@ public class ResourceCreator {
          * Registers the bot's commands
          */
         registerCommands(guild);
+    }
+
+    public static void addNewServerFolders(long guildID) {
+        
+        /*
+         * Add all of the folders and files for the
+         * new server
+         */
+        addFolder(ofServer(guildID));
+        addFolder(ofServer(guildID, "logs"));
+        addFolder(ofServer(guildID, "settings"));
+        addFolder(ofServer(guildID, "settings\\sys"));
+        addFolder(ofServer(guildID, "settings\\sys\\setstrikes"));
+        addFolder(ofServer(guildID, "settings\\general"));
+        addFolder(ofServer(guildID, "settings\\censoredwords"));
+        addFolder(ofServer(guildID, "settings\\whitelist"));
+        addFolder(ofServer(guildID, "settings\\newmemberroles"));
+        addFolder(ofServer(guildID, "memory"));
+        addFolder(ofServer(guildID, "memory\\members"));
+        addFolder(ofServer(guildID, "memory\\joinattempts"));
     }
 
     /**
@@ -287,5 +278,19 @@ public class ResourceCreator {
             new OptionData(OptionType.STRING, "type", "s=Seconds, m=Minutes, h=Hours, d=Days", true).setMinLength(1).setMaxLength(1),
             new OptionData(OptionType.INTEGER, "time", "Amount of time to be set", true).setMinValue(1).setMaxValue(9999999999999L)
         ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_SERVER)).queue();
+
+        /**
+         * Upsert addnewmemberrole command
+         */
+        guild.upsertCommand("addnewmemberautorole", "Add a new auto role to be added for new members").addOptions(
+            new OptionData(OptionType.ROLE, "role", "The new role to be registered", true)
+        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
+
+        /**
+         * Upsert removenewmemberautorole command
+         */
+        guild.upsertCommand("removenewmemberautorole", "Remove a new role to be added for new members").addOptions(
+            new OptionData(OptionType.ROLE, "role", "The auto role to be removed", true)
+        ).setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).queue();
     }
 }

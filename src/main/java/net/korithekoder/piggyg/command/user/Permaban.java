@@ -1,16 +1,15 @@
-package net.korithekoder.piggyg.command.sys;
-
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+package net.korithekoder.piggyg.command.user;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFile;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addFolder;
 import static net.korithekoder.piggyg.resource.ResourceCreator.addServerDirectory;
-import static net.korithekoder.piggyg.resource.ResourceDirectory.ofSysSetting;
 import static net.korithekoder.piggyg.resource.ResourceDirectory.ofServer;
+import static net.korithekoder.piggyg.resource.ResourceDirectory.ofSysSetting;
 
 /**
  * Discord command used for permabanning a user from the guild

@@ -44,6 +44,14 @@ public class ResourceDirectory {
         return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\censoredwords\\" + word + ".json";
     }
 
+    public static String ofSetting(long guildID) {
+        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\";
+    }
+
+    public static String ofSetting(String trailingDir, long guildID) {
+        return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\" + trailingDir;
+    }
+
     public static String ofGeneralSetting(String setting, long guildID) {
         return "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Roaming\\Piggy_G\\resources\\servers\\" + guildID + "\\settings\\general\\" + setting;
     }
